@@ -120,14 +120,16 @@ set bd_list [glob -nocomplain $src_dir/bd/*/*.bd]
 if {[llength $bd_list] != 0} {
   add_files -norecurse -quiet -fileset sources_1 [glob -nocomplain $src_dir/bd/*/*.bd]
   open_bd_design [glob -nocomplain $src_dir/bd/*/*.bd]
-  set design_name [get_bd_designs]
+  set design_name system
   set file "$origin_dir/src/bd/$design_name/$design_name.bd"
   set file [file normalize $file]
   set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
   if { ![get_property "is_locked" $file_obj] } {
     set_property "synth_checkpoint_mode" "Hierarchical" $file_obj
   }
- 
+
+  upgrade_ip [current_bd_design ]
+  report_ip_status
   # Generate the wrapper 
   set design_name [get_bd_designs]
   add_files -norecurse [make_wrapper -files [get_files $design_name.bd] -top -force]
