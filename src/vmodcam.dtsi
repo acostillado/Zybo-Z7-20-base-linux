@@ -1,0 +1,52 @@
+
+/ {
+
+    mclkA: mclkA {
+        #clock-cells = <0>;
+        clock-frequency = <24000000>;
+        compatible = "fixed-clock";
+    };
+
+    vcap_mipi_csi2_rx_subsystem_0 {
+        compatible = "xlnx,video";
+        dma-names = "port0";
+        dmas = <&v_frmbuf_wr_0 0>;
+        vcap_portsmipi_csi2_rx_subsystem_0: ports {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            vcap_portmipi_csi2_rx_subsystem_0: port@0 {
+                direction = "input";
+                reg = <0>;
+                v_frmbuf_wr_0mipi_csi2_rx_subsystem_0: endpoint {
+                    remote-endpoint = <&vmodcam_sensorA_out>;
+                };
+            };
+        };
+    };
+
+};
+
+
+&i2c0 {
+    m9m11x_a: sensor@3c {
+        compatible = "aptina, mt9m112";
+        reg = <0x3c>;
+        clock-frequency = <24000000>;
+        clocks = <&mclkA>;
+        clock-names = "xclkA";
+        xlnx,ppc = <1>;
+        xlnx,vfb;
+        vmodcam_sensorA: ports {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            vmodcam_sensorA_port0: port@0 {
+                reg = <<1>;
+                xlnx,video-width = <8>;
+                vmodcam_sensorA_out: endpoint {
+                    remote-endpoint = <&v_frmbuf_wr_0mipi_csi2_rx_subsystem_0>;
+                }
+            } 
+
+        }
+    }
+}
